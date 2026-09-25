@@ -1,5 +1,7 @@
 function [h, p] = manual_histogram(Image)
-    % Fungsi menghitung histogram citra berukuran M x N dengan 256 derajat keabuan (graylevel).  
+    % Fungsi menghitung histogram citra berukuran M x N dengan 256 derajat keabuan.  
+    % Input:
+    %   Image : Matriks citra 2D M x N (uint8 atau double)
     % Output:
     %   h : Frekuensi piksel (0..255)
     %   p : Probabilitas atau Normalisasi (float 0.0..1.0)
