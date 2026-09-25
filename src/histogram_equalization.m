@@ -1,7 +1,7 @@
-function ImageOut = histogram_equalization(Image)
-    % HISTOGRAM_EQUALIZATION
+function ImageOut = Histogram_equalization(Image)
+    % HistOGRAM_EQUALIZATION
     % Fungsi untuk meratakan distribusi intensitas citra (perataan
-    % histogram)
+    % Histogram)
     % Input:
     %   Image : Matriks citra 2D
     % Output:
@@ -11,12 +11,12 @@ function ImageOut = histogram_equalization(Image)
     Image = uint8(Image);
     total_pixels = n * m;
 
-    % Membuat histogram dari freq setiap intensitas
-    hist = zeros(1, 256)
+    % Membuat Histogram dari freq setiap intensitas
+    Hist = zeros(1, 256)
     for i = 1:n
         for j = 1:m
             value = double(Image(i, j)) + 1;
-            hist(value) = hist(value) + 1;
+            Hist(value) = Hist(value) + 1;
         end
     end
 
@@ -37,7 +37,7 @@ function ImageOut = histogram_equalization(Image)
     for i = 1:n
         for j = 1:m
             pixel_value = double(Image(i, j));
-            ImageOut(i, j) = uint8(CDF(pixel_value + 1));
+            ImageOut(i, j) = uint8(cdf(pixel_value + 1));
         end
     end
 end

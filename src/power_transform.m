@@ -7,7 +7,7 @@ function ImageOut = power_transform(Image, c, gamma)
     % Output:
     %   ImageOut : Matriks citra 2D hasil transformasi
 
-    if nargain < 2
+    if nargin < 2
         c = 1;
     end
 
