@@ -48,19 +48,14 @@ else
 end
 
 % #5 PROSES ENHANCEMENT
-img_out = img_in; % Unprocessed (hapus jika tidak dibutuhkan)
-
-% Contoh Pemakaian Fungsi:
-%
-% Contoh 1 (Nonlinear Median Filter):
-%   method_name   = 'Nonlinear Filter';
-%   method_params = 'Median Window 3x3';
-%   img_out       = manual_nonlinear_filter(img_in, 3, 'median');
-%
-% Contoh 2 (Histogram Specification):
-%   method_name   = 'Histogram Specification';
-%   method_params = 'Target Ref: image_ref.png';
-%   img_out       = histogram_spesification(img_in, target_spec);
+method_name   = 'Image Filtering (Gaussian 3x3 + High-Boost Filter)';
+method_params = '3x3 Gaussian Mask [1 2 1; 2 4 2; 1 2 1]/16, High-Boost Alpha = 1.2, Replicate Padding';
+gaussian_3x3  = [1 2 1; 2 4 2; 1 2 1] / 16;
+img_gauss = manual_linear_filter(img_in, gaussian_3x3, 'replicate');
+lowpass_gauss   = manual_linear_filter(img_gauss, gaussian_3x3, 'replicate');
+highpass_gauss  = double(img_gauss) - double(lowpass_gauss);
+alpha     = 1.2;
+img_out   = uint8(double(img_gauss) + (alpha - 1) * double(img_gauss) + highpass_gauss);
 
 % #6 ANALISIS STATISTIK DAN HISTOGRAM AKHIR
 if is_grayscale
@@ -153,4 +148,72 @@ else
     plot(0:255, hist_out_R, 'r', 0:255, hist_out_G, 'g', 0:255, hist_out_B, 'b', 'LineWidth', 1.2);
     title('Histogram Hasil (RGB)'); legend('R', 'G', 'B');
 end
+xlabel('Intensitas'); ylabel('Probabilitas'); grid on;
+
+% #9 EKSPLORASI I
+% Analisis perbandingan metode image smoothing
+img_g3 = img_gauss; 
+
+gaussian_5x5 = [1  4  7  4  1;
+    4 16 26 16  4;
+    7 26 41 26  7;
+    4 16 26 16  4;
+    1  4  7  4  1] / 273;
+img_g5 = manual_linear_filter(img_in, gaussian_5x5, 'replicate');
+
+img_m3 = manual_nonlinear_filter(img_in, 3, 'median');
+
+figure('Name', ['Eksplorasi I - Perbandingan Smoothing: ' img_path], 'NumberTitle', 'off');
+subplot(2, 2, 1); imshow(img_in); title('Citra Masukan');
+subplot(2, 2, 2); imshow(img_g3); title('Gaussian Filter 3x3');
+subplot(2, 2, 3); imshow(img_g5); title('Gaussian Filter 5x5');
+subplot(2, 2, 4); imshow(img_m3); title('Median Filter 3x3');
+
+% #10 EKSPLORASI II
+% Analisis pengujian image sharpening
+lowpass_blur  = manual_linear_filter(img_in, gaussian_3x3, 'replicate');
+highpass_diff = double(img_in) - double(lowpass_blur);
+
+img_unsharp = uint8(double(img_in) + (1.0 * highpass_diff)); 
+img_hb1     = uint8(((1.2 - 1) * double(img_in)) + highpass_diff); 
+img_hb2     = uint8(((1.5 - 1) * double(img_in)) + highpass_diff); 
+
+figure('Name', ['Eksplorasi II - Pengujian Sharpening: ' img_path], 'NumberTitle', 'off');
+subplot(2, 2, 1); imshow(img_in);      title('Citra Masukan');
+subplot(2, 2, 2); imshow(img_unsharp); title('Unsharp Masking (alpha = 1.0)');
+subplot(2, 2, 3); imshow(img_hb1);     title('High-Boost Filter (alpha = 1.2)');
+subplot(2, 2, 4); imshow(img_hb2);     title('High-Boost Filter (alpha = 1.5)');
+
+% #11 EKSPLORASI III
+% Penerapan High-Boost Filter pada citra hasil smoothing
+alpha2 = 1.5;
+img_kombinasi_a2 = uint8(double(img_gauss) + (alpha2 - 1) * double(img_gauss) + highpass_gauss);
+
+figure('Name', ['Eksplorasi III - Penerapan High-Boost Filter setelah Smoothing: ' img_path], 'NumberTitle', 'off');
+subplot(2, 2, 1); imshow(img_in);           title('1. Citra Masukan');
+subplot(2, 2, 2); imshow(img_gauss);        title('Gaussian Filter 3x3 (Tanpa High-Boost)');
+subplot(2, 2, 3); imshow(img_out);          title('Gaussian Filter 3x3 + High-Boost (alpha = 1.2)');
+subplot(2, 2, 4); imshow(img_kombinasi_a2); title('Gaussian Filter 3x3 + High-Boost (alpha = 1.5)');
+
+
+% #11 EKSPLORASI IV
+% Perbandingan histogram Gaussian Filter 3x3 tanpa dan dengan High-Boost (alpha = 1.2)
+
+[~, hist_gauss] = manual_histogram(img_gauss);
+[~, hist_high_boost] = manual_histogram(img_out);
+
+figure('Name', ['Eksplorasi IV - Perbandingan Histogram: ' img_path], 'NumberTitle', 'off');
+subplot(2, 2, 1); 
+imshow(img_gauss); 
+title('Gaussian Filter 3x3 (Tanpa High-Boost)');
+subplot(2, 2, 2); 
+imshow(img_out); 
+title('Gaussian Filter 3x3 + High-Boost (alpha = 1.2)');
+subplot(2, 2, 3);
+bar(0:255, hist_gauss, 'BarWidth', 1, 'FaceColor', [0.2 0.2 0.2]);
+title('Histogram Gaussian Filter 3x3 (Tanpa High-Boost)');
+xlabel('Intensitas'); ylabel('Probabilitas'); grid on;
+subplot(2, 2, 4);
+bar(0:255, hist_high_boost, 'BarWidth', 1, 'FaceColor', [0.2 0.2 0.2]);
+title('Histogram Gaussian Filter 3x3 + High-Boost (alpha = 1.2)');
 xlabel('Intensitas'); ylabel('Probabilitas'); grid on;

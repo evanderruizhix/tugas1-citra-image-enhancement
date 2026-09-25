@@ -48,19 +48,9 @@ else
 end
 
 % #5 PROSES ENHANCEMENT
-img_out = img_in; % Unprocessed (hapus jika tidak dibutuhkan)
-
-% Contoh Pemakaian Fungsi:
-%
-% Contoh 1 (Nonlinear Median Filter):
-%   method_name   = 'Nonlinear Filter';
-%   method_params = 'Median Window 3x3';
-%   img_out       = manual_nonlinear_filter(img_in, 3, 'median');
-%
-% Contoh 2 (Histogram Specification):
-%   method_name   = 'Histogram Specification';
-%   method_params = 'Target Ref: image_ref.png';
-%   img_out       = histogram_spesification(img_in, target_spec);
+method_name   = 'Nonlinear Filter';
+method_params = 'Median Window 3x3';
+img_out       = manual_nonlinear_filter(img_in, 3, 'median');
 
 % #6 ANALISIS STATISTIK DAN HISTOGRAM AKHIR
 if is_grayscale
@@ -154,3 +144,23 @@ else
     title('Histogram Hasil (RGB)'); legend('R', 'G', 'B');
 end
 xlabel('Intensitas'); ylabel('Probabilitas'); grid on;
+
+% #9 EKSPLORASI TAMBAHAN
+% Mencoba variasi ukuran window: 3x3, 5x5, dan 7x7
+img_m3 = img_out;
+img_m5 = manual_nonlinear_filter(img_in, 5, 'median');
+img_m7 = manual_nonlinear_filter(img_in, 7, 'median');
+
+figure('Name', ['Analisis Ukuran Window Median Filtering: ' img_path], 'NumberTitle', 'off');
+
+subplot(2, 2, 1); imshow(img_in); 
+title('Citra Masukan');
+
+subplot(2, 2, 2); imshow(img_m3); 
+title('Median Filter 3x3');
+
+subplot(2, 2, 3); imshow(img_m5); 
+title('Median Filter 5x5');
+
+subplot(2, 2, 4); imshow(img_m7); 
+title('Median Filter 7x7');

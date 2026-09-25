@@ -48,19 +48,14 @@ else
 end
 
 % #5 PROSES ENHANCEMENT
-img_out = img_in; % Unprocessed (hapus jika tidak dibutuhkan)
+method_name   = 'Image Filtering (Strong High-Pass Filter)';
+method_params = '3x3 Mask [-1 -1 -1; -1 9 -1; -1 -1 -1], Replicate Padding';
 
-% Contoh Pemakaian Fungsi:
-%
-% Contoh 1 (Nonlinear Median Filter):
-%   method_name   = 'Nonlinear Filter';
-%   method_params = 'Median Window 3x3';
-%   img_out       = manual_nonlinear_filter(img_in, 3, 'median');
-%
-% Contoh 2 (Histogram Specification):
-%   method_name   = 'Histogram Specification';
-%   method_params = 'Target Ref: image_ref.png';
-%   img_out       = histogram_spesification(img_in, target_spec);
+sharpen_8n = [-1 -1 -1; 
+              -1  9 -1; 
+              -1 -1 -1];
+           
+img_out = manual_linear_filter(img_in, sharpen_8n, 'replicate');
 
 % #6 ANALISIS STATISTIK DAN HISTOGRAM AKHIR
 if is_grayscale
@@ -154,3 +149,33 @@ else
     title('Histogram Hasil (RGB)'); legend('R', 'G', 'B');
 end
 xlabel('Intensitas'); ylabel('Probabilitas'); grid on;
+
+% #9 EKSPLORASI TAMBAHAN
+% 1. Strong High-Pass Filter (8-neighbor)
+img_s1 = img_out;
+
+% 2. Basic High-Pass Filter (4-neighbor)
+sharpen_4n = [ 0 -1  0; 
+              -1  5 -1; 
+               0 -1  0];
+img_s2 = manual_linear_filter(img_in, sharpen_4n, 'replicate');
+
+% 3. Pure Edge Detection
+edge_det = [ -1 -1  -1; 
+            -1  8 -1; 
+             -1 -1  -1];
+img_s3 = manual_linear_filter(img_in, edge_det, 'replicate');
+
+figure('Name', ['Analisis Eksplorasi High-Pass Filter: ' img_path], 'NumberTitle', 'off');
+
+subplot(2, 2, 1); imshow(img_in); 
+title('Citra Masukan');
+
+subplot(2, 2, 2); imshow(img_s1); 
+title('Strong High-Pass Filter (8-neighbor)');
+
+subplot(2, 2, 3); imshow(img_s2); 
+title('Basic High-Pass Filter (4-neighbor)');
+
+subplot(2, 2, 4); imshow(img_s3); 
+title('Pure Edge Detection');
