@@ -48,19 +48,12 @@ else
 end
 
 % #5 PROSES ENHANCEMENT
-img_out = img_in; % Unprocessed (hapus jika tidak dibutuhkan)
-
-% Contoh Pemakaian Fungsi:
-%
-% Contoh 1 (Nonlinear Median Filter):
-%   method_name   = 'Nonlinear Filter';
-%   method_params = 'Median Window 3x3';
-%   img_out       = manual_nonlinear_filter(img_in, 3, 'median');
-%
-% Contoh 2 (Histogram Specification):
-%   method_name   = 'Histogram Specification';
-%   method_params = 'Target Ref: image_ref.png';
-%   img_out       = histogram_spesification(img_in, target_spec);
+method_name   = 'Nonlinear Filter';
+method_params = 'Median Window 5x5 (RGB)';
+img_out = zeros(size(img_in), 'like', img_in);
+for c = 1:3
+    img_out(:,:,c) = manual_nonlinear_filter(img_in(:,:,c), 5, 'median');
+end
 
 % #6 ANALISIS STATISTIK DAN HISTOGRAM AKHIR
 if is_grayscale
@@ -142,6 +135,7 @@ if is_grayscale
 else
     plot(0:255, hist_in_R, 'r', 0:255, hist_in_G, 'g', 0:255, hist_in_B, 'b', 'LineWidth', 1.2);
     title('Histogram Awal (RGB)'); legend('R', 'G', 'B');
+    xlim([0 255]);
 end
 xlabel('Intensitas'); ylabel('Probabilitas'); grid on;
 
@@ -152,5 +146,31 @@ if is_grayscale
 else
     plot(0:255, hist_out_R, 'r', 0:255, hist_out_G, 'g', 0:255, hist_out_B, 'b', 'LineWidth', 1.2);
     title('Histogram Hasil (RGB)'); legend('R', 'G', 'B');
+    xlim([0 255]);
 end
 xlabel('Intensitas'); ylabel('Probabilitas'); grid on;
+
+% #9 EKSPLORASI TAMBAHAN
+% Mencoba variasi ukuran window penapis median per kanal RGB: 3x3, 5x5, dan 7x7
+img_m5 = img_out; % Hasil 5x5 dari Bagian #5 (Parameter Optimal)
+
+img_m3 = zeros(size(img_in), 'like', img_in);
+img_m7 = zeros(size(img_in), 'like', img_in);
+for c = 1:3
+    img_m3(:,:,c) = manual_nonlinear_filter(img_in(:,:,c), 3, 'median');
+    img_m7(:,:,c) = manual_nonlinear_filter(img_in(:,:,c), 7, 'median');
+end
+
+figure('Name', ['Analisis Ukuran Window Median Filtering (RGB): ' img_path], 'NumberTitle', 'off');
+
+subplot(2, 2, 1); imshow(img_in); 
+title('Citra Masukan');
+
+subplot(2, 2, 2); imshow(img_m3); 
+title('Median Filter 3x3');
+
+subplot(2, 2, 3); imshow(img_m5); 
+title('Median Filter 5x5');
+
+subplot(2, 2, 4); imshow(img_m7); 
+title('Median Filter 7x7');
