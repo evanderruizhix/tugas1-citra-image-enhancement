@@ -48,7 +48,9 @@ else
 end
 
 % #5 PROSES ENHANCEMENT
-img_out = img_in; % Unprocessed (hapus jika tidak dibutuhkan)
+method_name   = 'Power Transform';
+method_params = 'Gamma = 2.0';
+img_out       = power_transform(img_in_proc, 1, 2.0);
 
 % Contoh Pemakaian Fungsi:
 %
@@ -154,3 +156,15 @@ else
     title('Histogram Hasil (RGB)'); legend('R', 'G', 'B');
 end
 xlabel('Intensitas'); ylabel('Probabilitas'); grid on;
+
+% #9 EKSPLORASI TAMBAHAN
+% Eksplorasi variasi parameter Power Transform (Gamma) untuk menggelapkan
+img_e1 = power_transform(img_in_proc, 1, 1.5);
+img_e2 = power_transform(img_in_proc, 1, 2.5);
+img_e3 = power_transform(img_in_proc, 1, 4.0);
+
+figure('Name', ['Analisis Eksplorasi Gamma: ' img_path], 'NumberTitle', 'off');
+subplot(2, 2, 1); imshow(img_in_proc); title('Citra Masukan');
+subplot(2, 2, 2); imshow(img_e1); title('Power Transform (\gamma = 1.5)');
+subplot(2, 2, 3); imshow(img_e2); title('Power Transform (\gamma = 2.5)');
+subplot(2, 2, 4); imshow(img_e3); title('Power Transform (\gamma = 4.0)');

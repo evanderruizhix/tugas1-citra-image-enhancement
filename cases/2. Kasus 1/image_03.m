@@ -48,7 +48,13 @@ else
 end
 
 % #5 PROSES ENHANCEMENT
-img_out = img_in; % Unprocessed (hapus jika tidak dibutuhkan)
+method_name   = 'Histogram Equalization (RGB)';
+method_params = 'Terpisah tiap channel';
+
+img_out = zeros(size(img_in), 'uint8');
+img_out(:,:,1) = histogram_equalization(img_in(:,:,1)); % Channel R
+img_out(:,:,2) = histogram_equalization(img_in(:,:,2)); % Channel G
+img_out(:,:,3) = histogram_equalization(img_in(:,:,3)); % Channel B
 
 % Contoh Pemakaian Fungsi:
 %
@@ -154,3 +160,27 @@ else
     title('Histogram Hasil (RGB)'); legend('R', 'G', 'B');
 end
 xlabel('Intensitas'); ylabel('Probabilitas'); grid on;
+
+% #9 EKSPLORASI TAMBAHAN
+% Eksplorasi pemrosesan citra berwarna
+% 1. RGB Histogram Equalization
+img_e1 = zeros(size(img_in), 'uint8');
+img_e1(:,:,1) = histogram_equalization(img_in(:,:,1));
+img_e1(:,:,2) = histogram_equalization(img_in(:,:,2));
+img_e1(:,:,3) = histogram_equalization(img_in(:,:,3));
+
+% 2. Grayscale + Histogram Equalization
+img_gray = rgb2gray(img_in);
+img_e2 = histogram_equalization(img_gray);
+
+% 3. RGB Negative
+img_e3 = zeros(size(img_in), 'uint8');
+img_e3(:,:,1) = image_negative(img_in(:,:,1));
+img_e3(:,:,2) = image_negative(img_in(:,:,2));
+img_e3(:,:,3) = image_negative(img_in(:,:,3));
+
+figure('Name', ['Analisis Eksplorasi RGB: ' img_path], 'NumberTitle', 'off');
+subplot(2, 2, 1); imshow(img_in); title('Citra Masukan (RGB)');
+subplot(2, 2, 2); imshow(img_e1); title('HistEq pada Tiap Channel RGB');
+subplot(2, 2, 3); imshow(img_e2); title('Grayscale + HistEq');
+subplot(2, 2, 4); imshow(img_e3); title('Citra Negatif RGB');
