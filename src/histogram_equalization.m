@@ -1,4 +1,4 @@
-function ImageOut = Histogram_equalization(Image)
+function ImageOut = histogram_equalization(Image)
     % HistOGRAM_EQUALIZATION
     % Fungsi untuk meratakan distribusi intensitas citra (perataan
     % Histogram)
