@@ -48,19 +48,24 @@ else
 end
 
 % #5 PROSES ENHANCEMENT
-img_out = img_in; % Unprocessed (hapus jika tidak dibutuhkan)
+manual_r_min = [0, 1, 0];
+manual_r_max = [68, 60, 60];
+method_name   = 'Intensity Transformation -> Contrast Stretching';
+method_params = ['Manual Range (R:' num2str(manual_r_min(1)) '-' num2str(manual_r_max(1)) ...
+                 ', G:' num2str(manual_r_min(2)) '-' num2str(manual_r_max(2)) ...
+                 ', B:' num2str(manual_r_min(3)) '-' num2str(manual_r_max(3)) ')'];
 
-% Contoh Pemakaian Fungsi:
-%
-% Contoh 1 (Nonlinear Median Filter):
-%   method_name   = 'Nonlinear Filter';
-%   method_params = 'Median Window 3x3';
-%   img_out       = manual_nonlinear_filter(img_in, 3, 'median');
-%
-% Contoh 2 (Histogram Specification):
-%   method_name   = 'Histogram Specification';
-%   method_params = 'Target Ref: image_ref.png';
-%   img_out       = histogram_spesification(img_in, target_spec);
+if is_grayscale
+    img_out = contrast_stretching(img_in_proc, manual_r_min(1), manual_r_max(1));
+    if is_3ch
+        img_out = cat(3, img_out, img_out, img_out);
+    end
+else
+    img_out = zeros(size(img_in), 'like', img_in);
+    for c = 1:3
+        img_out(:,:,c) = contrast_stretching(img_in(:,:,c), manual_r_min(c), manual_r_max(c));
+    end
+end
 
 % #6 ANALISIS STATISTIK DAN HISTOGRAM AKHIR
 if is_grayscale
@@ -154,3 +159,96 @@ else
     title('Histogram Hasil (RGB)'); legend('R', 'G', 'B');
 end
 xlabel('Intensitas'); ylabel('Probabilitas'); grid on;
+
+% #9 EKSPLORASI I
+% Perbandingan Contrast Stretching (Min-Max vs Percentile) dengan Histogram Equalization dan Gamma Correction
+
+if is_grayscale
+    img_cs_minmax_proc = contrast_stretching(img_in_proc); 
+    img_cs_manual_proc = contrast_stretching(img_in_proc, manual_r_min, manual_r_max); 
+    img_gamma_low_proc  = power_transform(img_in_proc, 1, 0.5);
+    img_gamma_high_proc = power_transform(img_in_proc, 1, 1.5);
+    img_he_proc         = histogram_equalization(img_in_proc);
+    
+    if is_3ch
+        img_cs_minmax = cat(3, img_cs_minmax_proc, img_cs_minmax_proc, img_cs_minmax_proc);
+        img_cs_manual = cat(3, img_cs_manual_proc, img_cs_manual_proc, img_cs_manual_proc);
+        img_gamma_low  = cat(3, img_gamma_low_proc, img_gamma_low_proc, img_gamma_low_proc);
+        img_gamma_high = cat(3, img_gamma_high_proc, img_gamma_high_proc, img_gamma_high_proc);
+        img_he         = cat(3, img_he_proc, img_he_proc, img_he_proc);
+    else
+        img_cs_minmax = img_cs_minmax_proc;
+        img_cs_manual = img_cs_manual_proc;
+        img_gamma_low  = img_gamma_low_proc;
+        img_gamma_high = img_gamma_high_proc;
+        img_he         = img_he_proc;
+    end
+else
+    img_cs_minmax = zeros(size(img_in), 'like', img_in);
+    img_cs_manual = zeros(size(img_in), 'like', img_in);
+    img_gamma_low  = zeros(size(img_in), 'like', img_in);
+    img_gamma_high = zeros(size(img_in), 'like', img_in);
+    img_he         = zeros(size(img_in), 'like', img_in);
+    
+    for c = 1:3
+        img_cs_minmax(:,:,c) = contrast_stretching(img_in(:,:,c));
+        img_cs_manual(:,:,c) = contrast_stretching(img_in(:,:,c), manual_r_min(c), manual_r_max(c));        img_gamma_low(:,:,c)  = power_transform(img_in(:,:,c), 1, 0.5);
+        img_gamma_high(:,:,c) = power_transform(img_in(:,:,c), 1, 1.5);
+        img_he(:,:,c)         = histogram_equalization(img_in(:,:,c));
+    end
+end
+
+figure('Name', ['Eksplorasi I - Perbandingan Variasi Enhancement: ' img_path], 'NumberTitle', 'off');
+subplot(2, 3, 1); imshow(img_in);         title('1. Citra Masukan');
+subplot(2, 3, 2); imshow(img_cs_minmax);  title('2. CS Default (Min-Max)');
+subplot(2, 3, 3); imshow(img_cs_manual);  title(sprintf('3. CS Manual Range'));
+subplot(2, 3, 4); imshow(img_he);         title('4. Histogram Equalization');
+subplot(2, 3, 5); imshow(img_gamma_low);  title('5. Gamma Correction (gamma = 0.5)');
+subplot(2, 3, 6); imshow(img_gamma_high); title('6. Gamma Correction (gamma = 1.5)');
+
+% #10 EKSPLORASI II
+% Analisis perbandingan Min-Max Stretching Default vs Manual Range beserta histogramnya
+
+if is_grayscale
+    [~, hist_in_val]     = manual_histogram(img_in_proc);
+    [~, hist_minmax_val] = manual_histogram(img_cs_minmax_proc);
+    [~, hist_manual_val] = manual_histogram(img_cs_manual_proc);
+end
+
+figure('Name', ['Eksplorasi II - Analisis Min-Max vs Manual Range Stretching: ' img_path], 'NumberTitle', 'off');
+subplot(2, 3, 1); imshow(img_in);        title('1. Citra Masukan');
+subplot(2, 3, 2); imshow(img_cs_minmax); title('2. CS Default (Min-Max)');
+subplot(2, 3, 3); imshow(img_cs_manual); title(sprintf('3. CS Manual Range'));
+
+subplot(2, 3, 4);
+if is_grayscale
+    bar(0:255, hist_in_val, 'BarWidth', 1, 'FaceColor', [0.3 0.3 0.3]);
+else
+    plot(0:255, hist_in_R, 'r', 0:255, hist_in_G, 'g', 0:255, hist_in_B, 'b', 'LineWidth', 1.2);
+end
+title('Histogram Citra Masukan');
+xlabel('Intensitas'); ylabel('Probabilitas'); grid on; xlim([0 255]);
+
+subplot(2, 3, 5);
+if is_grayscale
+    bar(0:255, hist_minmax_val, 'BarWidth', 1, 'FaceColor', [0.2 0.4 0.8]);
+else
+    [~, h_mm_R] = manual_histogram(img_cs_minmax(:,:,1));
+    [~, h_mm_G] = manual_histogram(img_cs_minmax(:,:,2));
+    [~, h_mm_B] = manual_histogram(img_cs_minmax(:,:,3));
+    plot(0:255, h_mm_R, 'r', 0:255, h_mm_G, 'g', 0:255, h_mm_B, 'b', 'LineWidth', 1.2);
+end
+title('Histogram CS Default (Min-Max)');
+xlabel('Intensitas'); ylabel('Probabilitas'); grid on; xlim([0 255]);
+
+subplot(2, 3, 6);
+if is_grayscale
+    bar(0:255, hist_manual_val, 'BarWidth', 1, 'FaceColor', [0.8 0.2 0.2]);
+else
+    [~, h_man_R] = manual_histogram(img_cs_manual(:,:,1));
+    [~, h_man_G] = manual_histogram(img_cs_manual(:,:,2));
+    [~, h_man_B] = manual_histogram(img_cs_manual(:,:,3));
+    plot(0:255, h_man_R, 'r', 0:255, h_man_G, 'g', 0:255, h_man_B, 'b', 'LineWidth', 1.2);
+end
+title(sprintf('Histogram CS Manual'));
+xlabel('Intensitas'); ylabel('Probabilitas'); grid on; xlim([0 255]);
