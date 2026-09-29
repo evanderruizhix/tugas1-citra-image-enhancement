@@ -12,7 +12,7 @@ function ImageOut = histogram_equalization(Image)
     total_pixels = n * m;
 
     % Membuat Histogram dari freq setiap intensitas
-    Hist = zeros(1, 256)
+    Hist = zeros(1, 256);
     for i = 1:n
         for j = 1:m
             value = double(Image(i, j)) + 1;
