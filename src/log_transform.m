@@ -8,7 +8,7 @@ function ImageOut = log_transform(Image, c)
     % Output:
     %   ImageOut : Matriks citra 2D hasil transformasi 
 
-    if nmargin < 2
+    if nargin < 2
         c = 255/log(256);
     end
 
