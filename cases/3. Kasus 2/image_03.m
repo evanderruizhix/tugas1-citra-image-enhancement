@@ -48,19 +48,14 @@ else
 end
 
 % #5 PROSES ENHANCEMENT
-img_out = img_in; % Unprocessed (hapus jika tidak dibutuhkan)
+method_name   = 'Power Transform (RGB)';
+method_params = 'Gamma = 0.6';
 
-% Contoh Pemakaian Fungsi:
-%
-% Contoh 1 (Nonlinear Median Filter):
-%   method_name   = 'Nonlinear Filter';
-%   method_params = 'Median Window 3x3';
-%   img_out       = manual_nonlinear_filter(img_in, 3, 'median');
-%
-% Contoh 2 (Histogram Specification):
-%   method_name   = 'Histogram Specification';
-%   method_params = 'Target Ref: image_ref.png';
-%   img_out       = histogram_spesification(img_in, target_spec);
+img_out = zeros(size(img_in), 'uint8');
+img_out(:,:,1) = power_transform(img_in(:,:,1), 1, 0.6);
+img_out(:,:,2) = power_transform(img_in(:,:,2), 1, 0.6);
+img_out(:,:,3) = power_transform(img_in(:,:,3), 1, 0.6);
+
 
 % #6 ANALISIS STATISTIK DAN HISTOGRAM AKHIR
 if is_grayscale
@@ -154,3 +149,31 @@ else
     title('Histogram Hasil (RGB)'); legend('R', 'G', 'B');
 end
 xlabel('Intensitas'); ylabel('Probabilitas'); grid on;
+
+% #9 EKSPLORASI TAMBAHAN
+% Eksplorasi pencerahan citra berwarna (RGB)
+
+% 1. Power Transform (Gamma = 0.5) untuk mencerahkan
+img_e1 = zeros(size(img_in), 'uint8');
+img_e1(:,:,1) = power_transform(img_in(:,:,1), 1, 0.5);
+img_e1(:,:,2) = power_transform(img_in(:,:,2), 1, 0.5);
+img_e1(:,:,3) = power_transform(img_in(:,:,3), 1, 0.5);
+
+% 2. Log Transform
+img_e2 = zeros(size(img_in), 'uint8');
+c_log = 255/log(256);
+img_e2(:,:,1) = log_transform(img_in(:,:,1), c_log);
+img_e2(:,:,2) = log_transform(img_in(:,:,2), c_log);
+img_e2(:,:,3) = log_transform(img_in(:,:,3), c_log);
+
+% 3. Contrast Stretching
+img_e3 = zeros(size(img_in), 'uint8');
+img_e3(:,:,1) = contrast_stretching(img_in(:,:,1));
+img_e3(:,:,2) = contrast_stretching(img_in(:,:,2));
+img_e3(:,:,3) = contrast_stretching(img_in(:,:,3));
+
+figure('Name', ['Analisis Eksplorasi RGB: ' img_path], 'NumberTitle', 'off');
+subplot(2, 2, 1); imshow(img_in); title('Citra Masukan (RGB)');
+subplot(2, 2, 2); imshow(img_e1); title('Power Transform (\gamma = 0.5)');
+subplot(2, 2, 3); imshow(img_e2); title('Log Transform');
+subplot(2, 2, 4); imshow(img_e3); title('Contrast Stretching');

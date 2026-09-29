@@ -48,19 +48,10 @@ else
 end
 
 % #5 PROSES ENHANCEMENT
-img_out = img_in; % Unprocessed (hapus jika tidak dibutuhkan)
+method_name   = 'Contrast Stretching';
+method_params = 'None';
+img_out       = contrast_stretching(img_in_proc);
 
-% Contoh Pemakaian Fungsi:
-%
-% Contoh 1 (Nonlinear Median Filter):
-%   method_name   = 'Nonlinear Filter';
-%   method_params = 'Median Window 3x3';
-%   img_out       = manual_nonlinear_filter(img_in, 3, 'median');
-%
-% Contoh 2 (Histogram Specification):
-%   method_name   = 'Histogram Specification';
-%   method_params = 'Target Ref: image_ref.png';
-%   img_out       = histogram_spesification(img_in, target_spec);
 
 % #6 ANALISIS STATISTIK DAN HISTOGRAM AKHIR
 if is_grayscale
@@ -154,3 +145,15 @@ else
     title('Histogram Hasil (RGB)'); legend('R', 'G', 'B');
 end
 xlabel('Intensitas'); ylabel('Probabilitas'); grid on;
+
+% #9 EKSPLORASI TAMBAHAN
+% Eksplorasi perbaikan kontras pada citra pudar (washed-out)
+img_e1 = contrast_stretching(img_in_proc);
+img_e2 = histogram_equalization(img_in_proc);
+img_e3 = power_transform(img_in_proc, 1, 1.5); % Digelapkan sedikit
+
+figure('Name', ['Analisis Eksplorasi: ' img_path], 'NumberTitle', 'off');
+subplot(2, 2, 1); imshow(img_in_proc); title('Citra Masukan');
+subplot(2, 2, 2); imshow(img_e1); title('Contrast Stretching');
+subplot(2, 2, 3); imshow(img_e2); title('Histogram Equalization');
+subplot(2, 2, 4); imshow(img_e3); title('Power Transform (\gamma = 1.5)');

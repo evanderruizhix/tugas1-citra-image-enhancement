@@ -48,7 +48,9 @@ else
 end
 
 % #5 PROSES ENHANCEMENT
-img_out = img_in; % Unprocessed (hapus jika tidak dibutuhkan)
+method_name   = 'Histogram Equalization';
+method_params = 'None';
+img_out       = histogram_equalization(img_in_proc);
 
 % Contoh Pemakaian Fungsi:
 %
@@ -154,3 +156,15 @@ else
     title('Histogram Hasil (RGB)'); legend('R', 'G', 'B');
 end
 xlabel('Intensitas'); ylabel('Probabilitas'); grid on;
+
+% #9 EKSPLORASI TAMBAHAN
+% Eksplorasi pencerahan pada citra gelap
+img_e1 = histogram_equalization(img_in_proc);
+img_e2 = log_transform(img_in_proc, 255/log(256));
+img_e3 = power_transform(img_in_proc, 1, 0.5); % Dicerahkan
+
+figure('Name', ['Analisis Eksplorasi: ' img_path], 'NumberTitle', 'off');
+subplot(2, 2, 1); imshow(img_in_proc); title('Citra Masukan');
+subplot(2, 2, 2); imshow(img_e1); title('Histogram Equalization');
+subplot(2, 2, 3); imshow(img_e2); title('Log Transform');
+subplot(2, 2, 4); imshow(img_e3); title('Power Transform (\gamma = 0.5)');
