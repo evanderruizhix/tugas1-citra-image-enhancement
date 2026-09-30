@@ -12,7 +12,7 @@ function ImageOut = power_transform(Image, c, gamma)
     end
 
     if nargin < 3
-        gamma = 1
+        gamma = 1;
     end 
 
     [n, m] = size(Image);

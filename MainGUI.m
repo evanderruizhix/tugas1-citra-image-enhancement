@@ -38,14 +38,17 @@ function mainGUI()
 
     uicontrol('Parent', pnlMeth, 'Style', 'text', 'String', 'Metode:', 'HorizontalAlignment', 'left', 'Position', [10, 172, 50, 20]);
     
+    % UPDATE DAFTAR METODE
     metodeList = {'Contrast Stretching', 'Linear Filter', 'Non-linear Filter', ...
                   'High-Boost Filter', 'Histogram Equalization', 'Histogram Specification', ...
+                  'Log Transform', 'Inverse Log Transform', 'Power (Gamma) Transform', ...
                   'Validasi Histogram'};
               
     popMethod = uicontrol('Parent', pnlMeth, 'Style', 'popupmenu', ...
                           'String', metodeList, 'Value', 1, 'Position', [65, 170, 380, 25], 'Callback', @methodChanged);
-    % Kolom Input
-    % Contrast Stretching
+                      
+    % KOLOM INPUT PARAMETER
+    % 1. Contrast Stretching
     txtKanalCS = uicontrol('Parent', pnlMeth, 'Style', 'text', 'String', 'Kanal', 'FontWeight', 'bold', 'Position', [10, 145, 50, 18]);
     txtMinCS   = uicontrol('Parent', pnlMeth, 'Style', 'text', 'String', 'Min Input', 'FontWeight', 'bold', 'Position', [70, 145, 180, 18]);
     txtMaxCS   = uicontrol('Parent', pnlMeth, 'Style', 'text', 'String', 'Max Input', 'FontWeight', 'bold', 'Position', [260, 145, 180, 18]);
@@ -60,7 +63,22 @@ function mainGUI()
     editBmax = uicontrol('Parent', pnlMeth, 'Style', 'edit', 'String', '-', 'Position', [260, 58, 180, 22]);
     groupCS = [txtKanalCS, txtMinCS, txtMaxCS, txtR, editRmin, editRmax, txtG, editGmin, editGmax, txtB, editBmin, editBmax];
 
-    % Linear dan High-Boost Filter
+    % 2. Transformasi Intensitas (Log, Inv Log, Gamma)
+    txtKanalTrans = uicontrol('Parent', pnlMeth, 'Style', 'text', 'String', 'Kanal', 'FontWeight', 'bold', 'Position', [10, 145, 50, 18], 'Visible', 'off');
+    txtCTrans     = uicontrol('Parent', pnlMeth, 'Style', 'text', 'String', 'Konstanta (c)', 'FontWeight', 'bold', 'Position', [70, 145, 180, 18], 'Visible', 'off');
+    txtGammaTrans = uicontrol('Parent', pnlMeth, 'Style', 'text', 'String', 'Gamma (\gamma)', 'FontWeight', 'bold', 'Position', [260, 145, 180, 18], 'Visible', 'off');
+    txtRTrans = uicontrol('Parent', pnlMeth, 'Style', 'text', 'String', 'R / Gray:', 'HorizontalAlignment', 'left', 'Position', [10, 118, 55, 20], 'Visible', 'off');
+    editCR = uicontrol('Parent', pnlMeth, 'Style', 'edit', 'String', '1', 'Position', [70, 118, 180, 22], 'Visible', 'off');
+    editGammaR = uicontrol('Parent', pnlMeth, 'Style', 'edit', 'String', '1', 'Position', [260, 118, 180, 22], 'Visible', 'off');
+    txtGTrans = uicontrol('Parent', pnlMeth, 'Style', 'text', 'String', 'G:', 'HorizontalAlignment', 'left', 'Position', [10, 88, 55, 20], 'Visible', 'off');
+    editCG = uicontrol('Parent', pnlMeth, 'Style', 'edit', 'String', '1', 'Position', [70, 88, 180, 22], 'Visible', 'off');
+    editGammaG = uicontrol('Parent', pnlMeth, 'Style', 'edit', 'String', '1', 'Position', [260, 88, 180, 22], 'Visible', 'off');
+    txtBTrans = uicontrol('Parent', pnlMeth, 'Style', 'text', 'String', 'B:', 'HorizontalAlignment', 'left', 'Position', [10, 58, 55, 20], 'Visible', 'off');
+    editCB = uicontrol('Parent', pnlMeth, 'Style', 'edit', 'String', '1', 'Position', [70, 58, 180, 22], 'Visible', 'off');
+    editGammaB = uicontrol('Parent', pnlMeth, 'Style', 'edit', 'String', '1', 'Position', [260, 58, 180, 22], 'Visible', 'off');
+    groupTrans = [txtKanalTrans, txtCTrans, txtGammaTrans, txtRTrans, editCR, editGammaR, txtGTrans, editCG, editGammaG, txtBTrans, editCB, editGammaB];
+
+    % 3. Linear dan High-Boost Filter
     txtDyn1 = uicontrol('Parent', pnlMeth, 'Style', 'text', 'String', 'Matriks Kernel:', 'HorizontalAlignment', 'left', 'Position', [10, 122, 100, 20], 'Visible', 'off');
     editDyn1 = uicontrol('Parent', pnlMeth, 'Style', 'edit', 'String', '[1 2 1; 2 4 2; 1 2 1]/16', 'HorizontalAlignment', 'left', 'Position', [115, 122, 330, 22], 'Visible', 'off');
     txtDyn2 = uicontrol('Parent', pnlMeth, 'Style', 'text', 'String', 'Padding:', 'HorizontalAlignment', 'left', 'Position', [10, 90, 100, 20], 'Visible', 'off');
@@ -69,7 +87,7 @@ function mainGUI()
     editDyn3 = uicontrol('Parent', pnlMeth, 'Style', 'edit', 'String', '1.2', 'HorizontalAlignment', 'left', 'Position', [115, 58, 330, 22], 'Visible', 'off');
     groupDyn = [txtDyn1, editDyn1, txtDyn2, popDyn2, txtDyn3, editDyn3];
     
-    % Histogram Specification
+    % 4. Histogram Specification
     txtRef1 = uicontrol('Parent', pnlMeth, 'Style', 'text', 'String', 'Folder Acuan:', 'HorizontalAlignment', 'left', 'Position', [10, 122, 100, 20], 'Visible', 'off');
     popRefFolder = uicontrol('Parent', pnlMeth, 'Style', 'popupmenu', 'String', {'-'}, 'Position', [115, 120, 330, 25], 'Visible', 'off');
     txtRef2 = uicontrol('Parent', pnlMeth, 'Style', 'text', 'String', 'File Acuan:', 'HorizontalAlignment', 'left', 'Position', [10, 90, 100, 20], 'Visible', 'off');
@@ -149,11 +167,13 @@ function mainGUI()
     function methodChanged(~, ~)
         val = get(popMethod, 'Value');
         set(groupCS, 'Visible', 'off');
+        set(groupTrans, 'Visible', 'off');
         set(groupDyn, 'Visible', 'off');
         set(groupRef, 'Visible', 'off');
         
         if val == 1 % Contrast Stretching
             set(groupCS, 'Visible', 'on');
+            
         elseif val == 2 % Linear Filter
             set([txtDyn1, editDyn1, txtDyn2, popDyn2], 'Visible', 'on');
             set(txtDyn1, 'String', 'Matriks Kernel:');
@@ -162,12 +182,14 @@ function mainGUI()
             end
             set(txtDyn2, 'String', 'Tipe Padding:');
             set(popDyn2, 'String', {'replicate', 'zero'}, 'Value', 1);
+            
         elseif val == 3 % Non-Linear Filter
             set([txtDyn1, editDyn1, txtDyn2, popDyn2], 'Visible', 'on');
             set(txtDyn1, 'String', 'Ukuran Window (M x M):');
             set(editDyn1, 'String', '3');
             set(txtDyn2, 'String', 'Tipe Filter:');
             set(popDyn2, 'String', {'median', 'min', 'max'}, 'Value', 1);
+            
         elseif val == 4 % High-Boost
             set([txtDyn1, editDyn1, txtDyn2, popDyn2, txtDyn3, editDyn3], 'Visible', 'on');
             set(txtDyn1, 'String', 'Matriks Lowpass:');
@@ -176,11 +198,34 @@ function mainGUI()
             end
             set(txtDyn2, 'String', 'Tipe Padding:');
             set(popDyn2, 'String', {'replicate', 'zero'}, 'Value', 1);
+            
         elseif val == 5 % Histogram Equalization
             % Tanpa parameter
+            
         elseif val == 6 % Histogram Specification
             set(groupRef, 'Visible', 'on');
-        elseif val == 7 % Validasi Histogram
+            
+        elseif val == 7 % Log Transform
+            set([txtKanalTrans, txtCTrans, txtRTrans, editCR, txtGTrans, editCG, txtBTrans, editCB], 'Visible', 'on');
+            c_def = num2str(255/log(256), '%.3f'); % default 45.986
+            set(editCR, 'String', c_def);
+            if ~appData.isGrayscale, set([editCG, editCB], 'String', c_def); else, set([editCG, editCB], 'String', '-'); end
+            
+        elseif val == 8 % Inverse Log Transform
+            set([txtKanalTrans, txtCTrans, txtRTrans, editCR, txtGTrans, editCG, txtBTrans, editCB], 'Visible', 'on');
+            set(editCR, 'String', '1');
+            if ~appData.isGrayscale, set([editCG, editCB], 'String', '1'); else, set([editCG, editCB], 'String', '-'); end
+            
+        elseif val == 9 % Power (Gamma) Transform
+            set(groupTrans, 'Visible', 'on');
+            set(editCR, 'String', '1'); set(editGammaR, 'String', '1');
+            if ~appData.isGrayscale
+                set([editCG, editCB], 'String', '1'); set([editGammaG, editGammaB], 'String', '1');
+            else
+                set([editCG, editCB, editGammaG, editGammaB], 'String', '-');
+            end
+            
+        elseif val == 10 % Validasi Histogram
             % Tanpa parameter
         end
     end
@@ -217,18 +262,20 @@ function mainGUI()
         end
 
         imgD = double(img);
+        % Update Status Kotak Input Contrast Stretching & Transform
         if appData.isGrayscale
-            set(txtR, 'String', 'Gray:');
+            set([txtR, txtRTrans], 'String', 'Gray:');
             set(editRmin, 'String', num2str(min(imgD(:)))); set(editRmax, 'String', num2str(max(imgD(:))));
             set([editGmin, editGmax, editBmin, editBmax], 'String', '-', 'Enable', 'off', 'BackgroundColor', [0.9 0.9 0.9]);
+            set([editCG, editCB, editGammaG, editGammaB], 'Enable', 'off', 'BackgroundColor', [0.9 0.9 0.9]);
             set([chkR, chkG, chkB], 'Enable', 'off', 'Value', 0);
         else
-            set(txtR, 'String', 'R:');
+            set([txtR, txtRTrans], 'String', 'R:');
             set(editRmin, 'String', num2str(min(min(imgD(:,:,1))))); set(editRmax, 'String', num2str(max(max(imgD(:,:,1)))));
-            set(editGmin, 'String', num2str(min(min(imgD(:,:,2)))), 'Enable', 'on', 'BackgroundColor', 'white');
-            set(editGmax, 'String', num2str(max(max(imgD(:,:,2)))), 'Enable', 'on', 'BackgroundColor', 'white');
-            set(editBmin, 'String', num2str(min(min(imgD(:,:,3)))), 'Enable', 'on', 'BackgroundColor', 'white');
-            set(editBmax, 'String', num2str(max(max(imgD(:,:,3)))), 'Enable', 'on', 'BackgroundColor', 'white');
+            set(editGmin, 'String', num2str(min(min(imgD(:,:,2)))) ); set(editGmax, 'String', num2str(max(max(imgD(:,:,2)))) );
+            set(editBmin, 'String', num2str(min(min(imgD(:,:,3)))) ); set(editBmax, 'String', num2str(max(max(imgD(:,:,3)))) );
+            set([editGmin, editGmax, editBmin, editBmax], 'Enable', 'on', 'BackgroundColor', 'white');
+            set([editCG, editCB, editGammaG, editGammaB], 'Enable', 'on', 'BackgroundColor', 'white');
             set([chkR, chkG, chkB], 'Enable', 'on', 'Value', 1);
         end
 
@@ -244,7 +291,7 @@ function mainGUI()
         metodeVal = get(popMethod, 'Value');
 
         % Validasi Histogram (Tanpa Enhancement)
-        if metodeVal == 7
+        if metodeVal == 10
             files = get(popFile, 'String'); 
             fileSelected = files{get(popFile, 'Value')};
             runHistogramValidation(imgIn, fileSelected);
@@ -259,13 +306,39 @@ function mainGUI()
             if metodeVal == 1
                 namaMetode = 'Contrast Stretching';
                 rmin = str2double(get(editRmin, 'String')); rmax = str2double(get(editRmax, 'String'));
+                
                 if appData.isGrayscale
+                    % Validasi Grayscale
+                    if isnan(rmin) || isnan(rmax)
+                        error('Nilai r_min dan r_max harus berupa angka!');
+                    end
+                    if rmin < 0 || rmin > 255 || rmax < 0 || rmax > 255
+                        error('Nilai r_min dan r_max harus berada dalam rentang [0, 255]!');
+                    end
+                    if rmin >= rmax
+                        error('Nilai r_min harus lebih kecil dari r_max (r_min < r_max)!');
+                    end
+                    
                     imgOut = contrast_stretching(imgIn(:,:,1), rmin, rmax);
                     if appData.is3Ch, imgOut = cat(3, imgOut, imgOut, imgOut); end
                     paramStr = sprintf('Gray: [%g, %g]', rmin, rmax);
                 else
                     gmin = str2double(get(editGmin, 'String')); gmax = str2double(get(editGmax, 'String'));
                     bmin = str2double(get(editBmin, 'String')); bmax = str2double(get(editBmax, 'String'));
+                    
+                    % Validasi RGB
+                    if isnan(rmin) || isnan(rmax) || isnan(gmin) || isnan(gmax) || isnan(bmin) || isnan(bmax)
+                        error('Nilai min dan max harus berupa angka!');
+                    end
+                    if rmin < 0 || rmin > 255 || rmax < 0 || rmax > 255 || ...
+                       gmin < 0 || gmin > 255 || gmax < 0 || gmax > 255 || ...
+                       bmin < 0 || bmin > 255 || bmax < 0 || bmax > 255
+                        error('Nilai min dan max harus berada dalam rentang [0, 255]!');
+                    end
+                    if rmin >= rmax || gmin >= gmax || bmin >= bmax
+                        error('Nilai min harus lebih kecil dari max di setiap kanal!');
+                    end
+                    
                     imgOut(:,:,1) = contrast_stretching(imgIn(:,:,1), rmin, rmax);
                     imgOut(:,:,2) = contrast_stretching(imgIn(:,:,2), gmin, gmax);
                     imgOut(:,:,3) = contrast_stretching(imgIn(:,:,3), bmin, bmax);
@@ -275,6 +348,16 @@ function mainGUI()
             elseif metodeVal == 2
                 namaMetode = 'Linear Filter';
                 maskStr = get(editDyn1, 'String'); Mask = str2num(maskStr); %#ok<ST2NM>
+                
+                % Validasi Linear Filter
+                if isempty(Mask) || ~isnumeric(Mask)
+                    error('Kernel harus berupa matriks angka yang valid (contoh: [1 2 1; 2 4 2; 1 2 1])!');
+                end
+                [rM, cM] = size(Mask);
+                if mod(rM, 2) == 0 || mod(cM, 2) == 0
+                    error('Dimensi kernel (baris dan kolom) harus bilangan ganjil (contoh: 3x3, 5x5)!');
+                end
+                
                 pad_opts = get(popDyn2, 'String'); pad_type = pad_opts{get(popDyn2, 'Value')};
                 if appData.isGrayscale
                     imgTemp = manual_linear_filter(imgIn(:,:,1), Mask, pad_type);
@@ -287,6 +370,15 @@ function mainGUI()
             elseif metodeVal == 3
                 namaMetode = 'Non-Linear Filter';
                 w_size = str2double(get(editDyn1, 'String'));
+                
+                % Validasi Non-Linear Filter
+                if isnan(w_size) || isempty(w_size)
+                    error('Ukuran window harus berupa angka!');
+                end
+                if w_size < 1 || floor(w_size) ~= w_size || mod(w_size, 2) == 0
+                    error('Ukuran window harus bilangan bulat ganjil >= 1 (contoh: 3, 5, 7)!');
+                end
+                
                 type_opts = get(popDyn2, 'String'); filt_type = type_opts{get(popDyn2, 'Value')};
                 if appData.isGrayscale
                     imgTemp = manual_nonlinear_filter(imgIn(:,:,1), w_size, filt_type);
@@ -299,8 +391,21 @@ function mainGUI()
             elseif metodeVal == 4
                 namaMetode = 'High-Boost Filter';
                 maskStr = get(editDyn1, 'String'); Mask = str2num(maskStr); %#ok<ST2NM>
-                pad_opts = get(popDyn2, 'String'); pad_type = pad_opts{get(popDyn2, 'Value')};
                 alpha = str2double(get(editDyn3, 'String'));
+                
+                % Validasi High-Boost
+                if isempty(Mask) || ~isnumeric(Mask)
+                    error('Kernel Lowpass harus berupa matriks angka yang valid!');
+                end
+                [rM, cM] = size(Mask);
+                if mod(rM, 2) == 0 || mod(cM, 2) == 0
+                    error('Dimensi kernel Lowpass harus bilangan ganjil!');
+                end
+                if isnan(alpha) || alpha < 1.0
+                    error('Nilai Alpha (A) harus berupa angka >= 1.0!');
+                end
+                
+                pad_opts = get(popDyn2, 'String'); pad_type = pad_opts{get(popDyn2, 'Value')};
                 if appData.isGrayscale
                     imgTemp = manual_high_boost(imgIn(:,:,1), Mask, alpha, pad_type);
                     if appData.is3Ch, imgOut = cat(3, imgTemp, imgTemp, imgTemp); else, imgOut = imgTemp; end
@@ -323,8 +428,10 @@ function mainGUI()
                 namaMetode = 'Histogram Specification';
                 fRef = get(popRefFolder, 'String'); fRef = fRef{get(popRefFolder, 'Value')};
                 files = get(popRefFile, 'String'); fileRef = files{get(popRefFile, 'Value')};
+                
+                % Validasi Hist Spec
                 if strcmp(fRef, '(Kosong)') || strcmp(fileRef, '(Kosong)')
-                    error('Silakan pilih citra acuan terlebih dahulu!');
+                    error('Silakan pilih folder dan file citra acuan terlebih dahulu!');
                 end
                 
                 imgRef = imread(fullfile(appData.baseDir, fRef, fileRef));
@@ -341,7 +448,93 @@ function mainGUI()
                     end
                 end
                 paramStr = sprintf('Citra Acuan: %s', fileRef);
+                
+            elseif metodeVal == 7
+                namaMetode = 'Log Transform';
+                cR = str2double(get(editCR, 'String'));
+                if appData.isGrayscale
+                    % Validasi Log Grayscale
+                    if isnan(cR) || cR <= 0
+                        error('Konstanta c harus berupa angka dan lebih besar dari 0!');
+                    end
+                    
+                    imgTemp = log_transform(imgIn(:,:,1), cR);
+                    if appData.is3Ch, imgOut = cat(3, imgTemp, imgTemp, imgTemp); else, imgOut = imgTemp; end
+                    paramStr = sprintf('Gray: c=%.2f', cR);
+                else
+                    cG = str2double(get(editCG, 'String')); cB = str2double(get(editCB, 'String'));
+                    
+                    % Validasi Log RGB
+                    if isnan(cR) || cR <= 0 || isnan(cG) || cG <= 0 || isnan(cB) || cB <= 0
+                        error('Konstanta c untuk semua kanal harus berupa angka dan lebih besar dari 0!');
+                    end
+                    
+                    imgOut(:,:,1) = log_transform(imgIn(:,:,1), cR);
+                    imgOut(:,:,2) = log_transform(imgIn(:,:,2), cG);
+                    imgOut(:,:,3) = log_transform(imgIn(:,:,3), cB);
+                    paramStr = sprintf('R(c:%.2f) G(c:%.2f) B(c:%.2f)', cR, cG, cB);
+                end
+                
+            elseif metodeVal == 8
+                namaMetode = 'Inverse Log Transform';
+                cR = str2double(get(editCR, 'String'));
+                if appData.isGrayscale
+                    % Validasi Inv Log Grayscale
+                    if isnan(cR) || cR <= 0
+                        error('Konstanta c harus berupa angka dan lebih besar dari 0!');
+                    end
+                    
+                    imgTemp = inverse_log_transform(imgIn(:,:,1), cR);
+                    if appData.is3Ch, imgOut = cat(3, imgTemp, imgTemp, imgTemp); else, imgOut = imgTemp; end
+                    paramStr = sprintf('Gray: c=%.2f', cR);
+                else
+                    cG = str2double(get(editCG, 'String')); cB = str2double(get(editCB, 'String'));
+                    
+                    % Validasi Inv Log RGB
+                    if isnan(cR) || cR <= 0 || isnan(cG) || cG <= 0 || isnan(cB) || cB <= 0
+                        error('Konstanta c untuk semua kanal harus berupa angka dan lebih besar dari 0!');
+                    end
+                    
+                    imgOut(:,:,1) = inverse_log_transform(imgIn(:,:,1), cR);
+                    imgOut(:,:,2) = inverse_log_transform(imgIn(:,:,2), cG);
+                    imgOut(:,:,3) = inverse_log_transform(imgIn(:,:,3), cB);
+                    paramStr = sprintf('R(c:%.2f) G(c:%.2f) B(c:%.2f)', cR, cG, cB);
+                end
+                
+            elseif metodeVal == 9
+                namaMetode = 'Power (Gamma) Transform';
+                cR = str2double(get(editCR, 'String')); gR = str2double(get(editGammaR, 'String'));
+                if appData.isGrayscale
+                    % Validasi Gamma Grayscale
+                    if isnan(cR) || isnan(gR)
+                        error('Nilai Konstanta c dan Gamma harus berupa angka!');
+                    end
+                    if cR <= 0 || gR <= 0
+                        error('Nilai Konstanta c dan Gamma harus lebih besar dari 0!');
+                    end
+                    
+                    imgTemp = power_transform(imgIn(:,:,1), cR, gR);
+                    if appData.is3Ch, imgOut = cat(3, imgTemp, imgTemp, imgTemp); else, imgOut = imgTemp; end
+                    paramStr = sprintf('Gray: c=%.2f, γ=%.2f', cR, gR);
+                else
+                    cG = str2double(get(editCG, 'String')); cB = str2double(get(editCB, 'String'));
+                    gG = str2double(get(editGammaG, 'String')); gB = str2double(get(editGammaB, 'String'));
+                    
+                    % Validasi Gamma RGB
+                    if isnan(cR) || isnan(gR) || isnan(cG) || isnan(gG) || isnan(cB) || isnan(gB)
+                        error('Nilai Konstanta c dan Gamma untuk semua kanal harus berupa angka!');
+                    end
+                    if cR <= 0 || gR <= 0 || cG <= 0 || gG <= 0 || cB <= 0 || gB <= 0
+                        error('Nilai Konstanta c dan Gamma untuk semua kanal harus lebih besar dari 0!');
+                    end
+                    
+                    imgOut(:,:,1) = power_transform(imgIn(:,:,1), cR, gR);
+                    imgOut(:,:,2) = power_transform(imgIn(:,:,2), cG, gG);
+                    imgOut(:,:,3) = power_transform(imgIn(:,:,3), cB, gB);
+                    paramStr = sprintf('c=[%.2f,%.2f,%.2f], γ=[%.2f,%.2f,%.2f]', cR, cG, cB, gR, gG, gB);
+                end
             end
+            
         catch ME
             errordlg(ME.message, 'Validasi Input Gagal'); return;
         end

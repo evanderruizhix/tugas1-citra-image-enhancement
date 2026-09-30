@@ -20,7 +20,7 @@ function ImageOut = log_transform(Image, c)
             pixel_value = double(Image(i, j));
 
             % transformasi log: s = c* log(1 + r)
-            value = c * log(1 + pixel_value)
+            value = c * log(1 + pixel_value);
             ImageOut(i, j) = uint8(value);
         end
     end
