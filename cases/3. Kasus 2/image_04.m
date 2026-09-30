@@ -48,13 +48,13 @@ else
 end
 
 % #5 PROSES ENHANCEMENT
-method_name   = 'Histogram Equalization (RGB)';
-method_params = 'Terpisah tiap channel';
+method_name   = 'Inverse Log Transform (RGB)';
+method_params = 'c = 1 tiap channel';
 
 img_out = zeros(size(img_in), 'uint8');
-img_out(:,:,1) = histogram_equalization(img_in(:,:,1));
-img_out(:,:,2) = histogram_equalization(img_in(:,:,2));
-img_out(:,:,3) = histogram_equalization(img_in(:,:,3));
+img_out(:,:,1) = inverse_log_transform(img_in(:,:,1), 1);
+img_out(:,:,2) = inverse_log_transform(img_in(:,:,2), 1);
+img_out(:,:,3) = inverse_log_transform(img_in(:,:,3), 1);
 
 
 % #6 ANALISIS STATISTIK DAN HISTOGRAM AKHIR
@@ -165,14 +165,14 @@ img_e2(:,:,1) = contrast_stretching(img_in(:,:,1));
 img_e2(:,:,2) = contrast_stretching(img_in(:,:,2));
 img_e2(:,:,3) = contrast_stretching(img_in(:,:,3));
 
-% 3. Power Transform (Gamma = 1.2) - menggelapkan/mempertegas warna merah
+% 3. Inverse Log Transform (c = 1) - menggelapkan/mempertegas warna merah
 img_e3 = zeros(size(img_in), 'uint8');
-img_e3(:,:,1) = power_transform(img_in(:,:,1), 1, 1.2);
-img_e3(:,:,2) = power_transform(img_in(:,:,2), 1, 1.2);
-img_e3(:,:,3) = power_transform(img_in(:,:,3), 1, 1.2);
+img_e3(:,:,1) = inverse_log_transform(img_in(:,:,1), 1);
+img_e3(:,:,2) = inverse_log_transform(img_in(:,:,2), 1);
+img_e3(:,:,3) = inverse_log_transform(img_in(:,:,3), 1);
 
 figure('Name', ['Analisis Eksplorasi Kopi RGB: ' img_path], 'NumberTitle', 'off');
 subplot(2, 2, 1); imshow(img_in); title('Citra Masukan (RGB)');
 subplot(2, 2, 2); imshow(img_e1); title('Histogram Equalization');
 subplot(2, 2, 3); imshow(img_e2); title('Contrast Stretching');
-subplot(2, 2, 4); imshow(img_e3); title('Power Transform (\gamma = 1.2)');
+subplot(2, 2, 4); imshow(img_e3); title('Inverse Log Transform (c = 1)');

@@ -47,17 +47,25 @@ else
                       'std',  [std(double(img_in(:,:,1)),0,'all'), std(double(img_in(:,:,2)),0,'all'), std(double(img_in(:,:,3)),0,'all')]);
 end
 
-% #5 PROSES ENHANCEMENT
-method_name_1   = 'Histogram Spesification';
-method_params = 'Gamma = 0.6';
+% #5 PROSES ENHANCEMENT (DIPERBAIKI UNTUK 2 TAHAP)
+method_name   = 'Hist. Specification + Inverse Log Transform';
+method_params = 'Target: Kasus 1 Img 03 | Inv-Log c = 1';
 
-method_name_2 = 'Inverse Log Transform'
-method_params = 'c = 1'
+% --- TAHAP 1: Histogram Specification ---
+img_ref = imread('2. Kasus 1/image_03.png');
+img_ref_proc = img_ref(:,:,1);
+[~, target_spec] = manual_histogram(img_ref_proc);
 
+img_tahap1 = zeros(size(img_in), 'uint8');
+img_tahap1(:,:,1) = histogram_spesification(img_in(:,:,1), target_spec);
+img_tahap1(:,:,2) = histogram_spesification(img_in(:,:,2), target_spec);
+img_tahap1(:,:,3) = histogram_spesification(img_in(:,:,3), target_spec);
+
+% --- TAHAP 2: Inverse Log Transform ---
 img_out = zeros(size(img_in), 'uint8');
-img_out(:,:,1) = power_transform(img_in(:,:,1), 1, 0.6);
-img_out(:,:,2) = power_transform(img_in(:,:,2), 1, 0.6);
-img_out(:,:,3) = power_transform(img_in(:,:,3), 1, 0.6);
+img_out(:,:,1) = inverse_log_transform(img_tahap1(:,:,1), 1);
+img_out(:,:,2) = inverse_log_transform(img_tahap1(:,:,2), 1);
+img_out(:,:,3) = inverse_log_transform(img_tahap1(:,:,3), 1);
 
 
 % #6 ANALISIS STATISTIK DAN HISTOGRAM AKHIR
