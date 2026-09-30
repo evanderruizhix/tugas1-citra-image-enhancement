@@ -56,17 +56,6 @@ img_out(:,:,1) = histogram_equalization(img_in(:,:,1));
 img_out(:,:,2) = histogram_equalization(img_in(:,:,2));
 img_out(:,:,3) = histogram_equalization(img_in(:,:,3));
 
-% Contoh Pemakaian Fungsi:
-%
-% Contoh 1 (Nonlinear Median Filter):
-%   method_name   = 'Nonlinear Filter';
-%   method_params = 'Median Window 3x3';
-%   img_out       = manual_nonlinear_filter(img_in, 3, 'median');
-%
-% Contoh 2 (Histogram Specification):
-%   method_name   = 'Histogram Specification';
-%   method_params = 'Target Ref: image_ref.png';
-%   img_out       = histogram_spesification(img_in, target_spec);
 
 % #6 ANALISIS STATISTIK DAN HISTOGRAM AKHIR
 if is_grayscale

@@ -49,20 +49,8 @@ end
 
 % #5 PROSES ENHANCEMENT
 method_name   = 'Histogram Equalization';
-method_params = 'None';
+method_params = '';
 img_out       = histogram_equalization(img_in_proc);
-
-% Contoh Pemakaian Fungsi:
-%
-% Contoh 1 (Nonlinear Median Filter):
-%   method_name   = 'Nonlinear Filter';
-%   method_params = 'Median Window 3x3';
-%   img_out       = manual_nonlinear_filter(img_in, 3, 'median');
-%
-% Contoh 2 (Histogram Specification):
-%   method_name   = 'Histogram Specification';
-%   method_params = 'Target Ref: image_ref.png';
-%   img_out       = histogram_spesification(img_in, target_spec);
 
 % #6 ANALISIS STATISTIK DAN HISTOGRAM AKHIR
 if is_grayscale
@@ -159,12 +147,12 @@ xlabel('Intensitas'); ylabel('Probabilitas'); grid on;
 
 % #9 EKSPLORASI TAMBAHAN
 % Eksplorasi variasi parameter Gamma dan HistEq
-img_e1 = histogram_equalization(img_in_proc);
-img_e2 = power_transform(img_in_proc, 1, 0.5); % Menerangkan citra
-img_e3 = power_transform(img_in_proc, 1, 2.0); % Menggelapkan citra
+img_e1 = inverse_log_transform(img_in_proc, 1);
+img_e2 = inverse_log_transform(img_in_proc, 5);
+img_e3 = histogram_equalization(img_in_proc)
 
 figure('Name', ['Analisis Eksplorasi: ' img_path], 'NumberTitle', 'off');
 subplot(2, 2, 1); imshow(img_in_proc); title('Citra Masukan');
-subplot(2, 2, 2); imshow(img_e1); title('Histogram Equalization');
-subplot(2, 2, 3); imshow(img_e2); title('Power Transform (\gamma = 0.5)');
-subplot(2, 2, 4); imshow(img_e3); title('Power Transform (\gamma = 2.0)');
+subplot(2, 2, 2); imshow(img_e1); title('Inverse Log Transform with c = 1');
+subplot(2, 2, 3); imshow(img_e2); title('Inverse Log Transform with c = 5');
+subplot(2, 2, 4); imshow(img_e3); title('Histogram Equalization');

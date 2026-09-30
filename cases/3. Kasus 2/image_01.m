@@ -48,10 +48,9 @@ else
 end
 
 % #5 PROSES ENHANCEMENT
-method_name   = 'Contrast Stretching';
-method_params = 'None';
-img_out       = contrast_stretching(img_in_proc);
-
+method_name   = 'Inverse Log Transform';
+method_params = 'c = 1.3';
+img_out       = inverse_log_transform(img_in_proc, 1.3);
 
 % #6 ANALISIS STATISTIK DAN HISTOGRAM AKHIR
 if is_grayscale
@@ -150,10 +149,10 @@ xlabel('Intensitas'); ylabel('Probabilitas'); grid on;
 % Eksplorasi perbaikan kontras pada citra pudar (washed-out)
 img_e1 = contrast_stretching(img_in_proc);
 img_e2 = histogram_equalization(img_in_proc);
-img_e3 = power_transform(img_in_proc, 1, 1.5); % Digelapkan sedikit
+img_e3 = inverse_log_transform(img_in_proc, 1.3);
 
 figure('Name', ['Analisis Eksplorasi: ' img_path], 'NumberTitle', 'off');
 subplot(2, 2, 1); imshow(img_in_proc); title('Citra Masukan');
 subplot(2, 2, 2); imshow(img_e1); title('Contrast Stretching');
 subplot(2, 2, 3); imshow(img_e2); title('Histogram Equalization');
-subplot(2, 2, 4); imshow(img_e3); title('Power Transform (\gamma = 1.5)');
+subplot(2, 2, 4); imshow(img_e3); title('Inverse Log Transform with c = 1.3');

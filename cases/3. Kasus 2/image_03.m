@@ -48,8 +48,11 @@ else
 end
 
 % #5 PROSES ENHANCEMENT
-method_name   = 'Power Transform (RGB)';
+method_name_1   = 'Histogram Spesification';
 method_params = 'Gamma = 0.6';
+
+method_name_2 = 'Inverse Log Transform'
+method_params = 'c = 1'
 
 img_out = zeros(size(img_in), 'uint8');
 img_out(:,:,1) = power_transform(img_in(:,:,1), 1, 0.6);

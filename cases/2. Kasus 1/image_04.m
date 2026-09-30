@@ -48,9 +48,9 @@ else
 end
 
 % #5 PROSES ENHANCEMENT
-method_name   = 'Power Transform';
-method_params = 'Gamma = 2.0';
-img_out       = power_transform(img_in_proc, 1, 2.0);
+method_name   = 'Histogram Equalization';
+method_params = 'None';
+img_out       =  histogram_equalization(img_in_proc);
 
 % Contoh Pemakaian Fungsi:
 %
@@ -159,12 +159,12 @@ xlabel('Intensitas'); ylabel('Probabilitas'); grid on;
 
 % #9 EKSPLORASI TAMBAHAN
 % Eksplorasi variasi parameter Power Transform (Gamma) untuk menggelapkan
-img_e1 = power_transform(img_in_proc, 1, 1.5);
-img_e2 = power_transform(img_in_proc, 1, 2.5);
-img_e3 = power_transform(img_in_proc, 1, 4.0);
+img_e1 = contrast_stretching(img_in_proc);
+img_e2 = inverse_log_transform(img_in_proc, 1);
+img_e3 = histogram_equalization(img_in_proc);
 
 figure('Name', ['Analisis Eksplorasi Gamma: ' img_path], 'NumberTitle', 'off');
 subplot(2, 2, 1); imshow(img_in_proc); title('Citra Masukan');
-subplot(2, 2, 2); imshow(img_e1); title('Power Transform (\gamma = 1.5)');
-subplot(2, 2, 3); imshow(img_e2); title('Power Transform (\gamma = 2.5)');
-subplot(2, 2, 4); imshow(img_e3); title('Power Transform (\gamma = 4.0)');
+subplot(2, 2, 2); imshow(img_e1); title('Contrast Stretching');
+subplot(2, 2, 3); imshow(img_e2); title('Inverse Log Transform with c = 1');
+subplot(2, 2, 4); imshow(img_e3); title('Histogram Equalization');
