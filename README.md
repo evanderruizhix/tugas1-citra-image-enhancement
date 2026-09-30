@@ -1,10 +1,10 @@
-# 📸 Tugas 1 IF4073 - Pemrosesan Citra Digital
+# Tugas 1 IF4073 - Pemrosesan Citra Digital
 
 > 💡 **Deskripsi:** Repositori ini berisi implementasi algoritma perbaikan kualitas citra (*image enhancement*) yang dibangun *from scratch* menggunakan MATLAB. Proyek ini mencakup antarmuka grafis (GUI) interaktif serta modul pengujian spesifik untuk berbagai studi kasus.
 
 ---
 
-## 🗂️ Struktur Direktori
+## Struktur Direktori
 
 Struktur *workspace* repositori ini diatur sebagai berikut:
 
@@ -28,7 +28,7 @@ Struktur *workspace* repositori ini diatur sebagai berikut:
 
 ---
 
-## 🧠 Konsep Algoritma
+## Konsep Algoritma
 
 Proyek ini mengimplementasikan tiga kategori utama algoritma *image enhancement* tanpa bergantung pada fungsi instan bawaan pemroses citra.
 
@@ -52,7 +52,7 @@ Metode yang memodifikasi nilai sebuah piksel berdasarkan evaluasi matematis atau
 
 ---
 
-## 🚀 Panduan Eksekusi
+## Panduan Eksekusi
 
 1. **Persiapan:** Buka MATLAB dan jadikan direktori *root* repositori ini sebagai *Current Folder*.
 2. **Mode Antarmuka (GUI):** Buka dan `Run` berkas `MainGUI.m`. Anda dapat memilih folder beserta citra ujinya langsung dari panel, menyesuaikan parameter metode, dan menekan **Terapkan** untuk melihat transformasi citra beserta histogramnya secara interaktif.
